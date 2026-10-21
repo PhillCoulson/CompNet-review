@@ -156,7 +156,14 @@ tbody th { font-weight: 500; }
 .lecture-sources li { display: flex; gap: 16px; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--soft-line); overflow-wrap: anywhere; }
 .lecture-sources span { flex-shrink: 0; color: var(--muted); }
 .page-footer { position: relative; margin-top: 18px; padding-right: 90px; color: var(--muted); font-size: 10px; line-height: 1.9; }
-.page-footer a { position: absolute; right: 0; top: 0; }
+.page-footer > .back-to-top { position: absolute; right: 0; top: 0; }
+.footer-links { display: flex; flex-direction: column; margin-top: 8px; }
+.footer-link { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 30px; padding: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 22px; font-weight: 400; text-decoration: none; white-space: nowrap; }
+.footer-link svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.footer-link strong { font-weight: 700; }
+.footer-link:hover { color: var(--rose); }
+.footer-link:hover span { text-decoration: underline; text-underline-offset: 4px; }
+.footer-link:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
 .empty-state { padding: 55px 24px; border: 1px solid var(--line); text-align: center; margin-bottom: 24px; }
 .empty-state h2 { font-size: 23px; font-weight: 500; margin: 7px 0; }
 .empty-state p:not(.eyebrow) { color: var(--muted); font-size: 13px; }
@@ -291,7 +298,8 @@ tbody th { font-weight: 500; }
   .source-details, .source-issues { font-size: 11px; }
   .lecture-sources li { gap: 10px; }
   .page-footer { padding-right: 0; }
-  .page-footer a { position: static; display: inline-block; margin-top: 10px; }
+  .page-footer > .back-to-top { position: static; display: inline-block; margin-top: 10px; }
+  .footer-link { font-size: 11px; }
   .question-dialog { width: calc(100% - 24px); max-height: 94dvh; }
   .dialog-panel { max-height: calc(94dvh - 2px); }
   .dialog-head { gap: 10px; padding: 18px 16px 15px; }
@@ -560,7 +568,14 @@ tbody th { font-weight: 500; }
         <details class="source-details"><summary>试卷来源与可信度 · 3 份回忆卷 + 1 份自测 / 120 道题</summary><ul class="paper-sources"><li><strong>2019 秋 · 本部 · 39 题</strong><span>2019秋本部计算机网络期末考试回忆版.pdf · 7 页</span></li><li><strong>2020 秋 · 本部回忆 · 16 题</strong><span>2020秋本部计算机网络期末考试回忆版.pdf · 4 页</span></li><li><strong>2025 春 · 深圳回忆 · 25 题</strong><span>2025年春计算机网络期末考试试题梗概（回忆版）.pdf · 6 页</span></li><li><strong>19秋本部模拟 · 不计考频 · 40 题</strong><span>2019秋本部计算机网络模拟题.pdf · 10 页</span></li><li><strong>批注重复件 · 不增加统计分母</strong><span>2020秋本部计算机网络期末考试回忆版_含答案.pdf · 已并入 2019 秋卷</span></li></ul><ul class="source-issues"><li><strong>2019 秋 · 本部：</strong>扫描卷保留填6、判5、选25、综合1/3/4，共39题；综合第2题缺页，不补造。2020文件名的含答案PDF实际为这份2019卷的批注版本，合并为同卷，批注不是官方答案。</li><li><strong>2020 秋 · 本部回忆：</strong>非完整原卷，只收录16条可辨识题目/考点记录；原文“忘了”的填空4、选择5及其余缺题不补。应用/网络结构歧义条不计细项考频；类似题图片不作为2020真实参数。</li><li><strong>2025 春 · 深圳回忆：</strong>深圳卷回忆梗概，共25条。材料自述题干/选项可能不同，考试日期2025年6月5日。综合2/4/5只附旧题参考图，关联展示但不计2025细项考频；其余明确考点按卷统计。</li><li><strong>19秋本部模拟 · 不计考频：</strong>文件名为2019秋模拟题，PDF内题头实际为深圳2020学年暑期自测试题，共40题。仅作补充练习，不作为第4份真题，不增加任何知识点的考频。</li></ul></details>
         <details class="source-details"><summary>课件清单 · 第 0 章大纲 + 第 1—7 章 / 9 份 PDF · 915 页</summary><ul class="lecture-sources"><li>Chapter0-课程简介-25秋-WYL-正式.pdf<span>14 页</span></li><li>Chapter1-Introduction-25秋-WYL-正式.pdf<span>128 页</span></li><li>Chapter2-Physical Layer-25秋-WYL-正式.pdf<span>77 页</span></li><li>Chapter3-Data Link Layer &amp; LAN-25秋-WYL-正式.pdf<span>160 页</span></li><li>Chapter4-Network Layer-WYL-25秋-正式-1.pdf<span>51 页</span></li><li>Chapter4-Network Layer-WYL-25秋-正式-2.pdf<span>169 页</span></li><li>Chapter5-Transport Layer-WYL-25秋-正式.pdf<span>83 页</span></li><li>Chapter6-Application Layer-WYL-25秋-正式.pdf<span>138 页</span></li><li>Chapter7-Wireless &amp; Mobile Networks-WYL-25秋-正式.pdf<span>95 页</span></li></ul></details>
       </section>
-      <footer class="page-footer"><p>计算机网络 · 章节复习档案　/　整理于 2026.10.21</p><a href="#top">返回顶部 ↑</a></footer>
+      <footer class="page-footer">
+        <p>计算机网络 · 章节复习档案　/　整理于 2026.10.21</p>
+        <a class="back-to-top" href="#top">返回顶部 ↑</a>
+        <div class="footer-links">
+          <a class="github-repository-link footer-link" href="https://github.com/PhillCoulson/CompNet-review" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 上查看仓库并 Star（在新标签页打开）" title="打开 GitHub 仓库，为复习网页点 Star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 19 4.77 5.07 5.07 0 0 0 18.91 1S17.73.65 15 2.48a13.38 13.38 0 0 0-7 0C5.27.65 4.09 1 4.09 1A5.07 5.07 0 0 0 4 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 8 18.13V22"/></svg><span lang="en">Star on GitHub</span></a>
+          <a class="related-review-link footer-link" href="https://phillcoulson.github.io/OS-review/" target="_blank" rel="noopener noreferrer" aria-label="在这里查看操作系统复习网页（在新标签页打开）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7m0-7L11 13"/><path d="M10 5H6a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-4"/></svg><span>在这里查看<strong>操作系统</strong>复习网页</span></a>
+        </div>
+      </footer>
     </main>
     <aside class="sidebar" aria-label="章节目录与考频概览">
       <details class="toc" id="toc" open>
