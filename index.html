@@ -176,8 +176,18 @@ tbody th { font-weight: 500; }
 .dialog-head > div { min-width: 0; }
 .dialog-head .eyebrow { color: var(--accent-text); font-size: 11px; }
 .dialog-head h2 { margin: 6px 0 9px; font-size: 22px; line-height: 1.5; font-weight: 600; }
+.dialog-head h2:focus { outline: none; }
 #question-source { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
 .close-button { width: 42px; height: 42px; flex-shrink: 0; display: grid; place-items: center; border: 1px solid #87867f; font-size: 27px; line-height: 1; }
+.dialog-actions { display: flex; flex-shrink: 0; gap: 10px; }
+.close-button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.resize-button .restore-icon { display: none; }
+.resize-button[aria-pressed="true"] .maximize-icon { display: none; }
+.resize-button[aria-pressed="true"] .restore-icon { display: block; }
+.question-dialog.is-maximized { width: 100%; height: 100dvh; max-height: none; }
+.question-dialog.is-resizing { position: fixed; inset: auto; margin: 0; max-height: none; overflow: hidden; }
+.question-dialog.is-maximized .dialog-panel, .question-dialog.is-resizing .dialog-panel { height: 100%; max-height: none; }
+.question-dialog.is-maximized .dialog-body, .question-dialog.is-resizing .dialog-body { flex: 1; }
 .dialog-body { min-height: 0; padding: 24px 26px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .dialog-body:focus-visible { outline-offset: -5px; }
 .question-flags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 19px; }
@@ -205,7 +215,8 @@ tbody th { font-weight: 500; }
 #question-position { font-size: 11px; color: var(--muted); }
 @media (hover: hover) {
   .question-link:hover { background: var(--accent-light); border-color: var(--accent); }
-  .reset-button:hover, .plain-button:hover, .close-button:hover { background: var(--reference); }
+  .reset-button:hover, .plain-button:hover { background: var(--reference); }
+  .close-button:hover { background: var(--accent-light); border-color: var(--accent); }
   #toc-links a:hover { color: var(--ink); background: #e8e5dc; }
   .answer-details > summary:hover { background: var(--accent-light); }
 }
@@ -315,9 +326,27 @@ tbody th { font-weight: 500; }
   .dialog-footer button { font-size: 11px; padding: 7px 9px; }
   #question-position { font-size: 10px; }
 }
-.original-pages { margin: 18px 0; border: 1px solid var(--line); }
-.original-pages > summary { padding: 12px 14px; cursor: pointer; font-size: 12px; background: var(--reference); }
+.original-pages { margin: 18px 0; border: 1px solid var(--soft-line); }
+.original-pages > summary { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; min-height: 56px; padding: 12px 17px; cursor: pointer; font-size: 13px; background: var(--reference); list-style: none; }
+.original-pages > summary::-webkit-details-marker { display: none; }
+.answer-details > summary { min-height: 56px; padding: 12px 17px; }
+.original-summary-title, .answer-details > summary > span { display: inline-flex; align-items: center; gap: 5px; }
+.disclosure-icon { display: inline-grid; place-items: center; position: relative; width: 13px; height: 16px; flex-shrink: 0; line-height: 1; }
+.original-pages:not([open]) .image-zoom-toolbar { display: none; }
 .original-pages .question-figure { padding: 12px; margin: 0; }
+.original-size-reference { position: fixed; inset: 0 auto auto 0; margin: 0; visibility: hidden; pointer-events: none; }
+.image-zoom-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-left: auto; color: var(--ink); }
+.image-zoom-label { font-size: 11px; color: var(--ink); }
+.image-zoom-button { position: relative; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid #87867f; flex-shrink: 0; }
+.image-zoom-button::before, .image-zoom-increase::after { content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 1.5px; background: currentColor; transform: translate(-50%, -50%); pointer-events: none; }
+.image-zoom-increase::after { width: 1.5px; height: 14px; }
+.image-zoom-percentage { min-width: 44px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink); }
+.image-zoom-reset { min-height: 30px; padding: 4px 8px; }
+.original-image-viewport { max-height: min(70dvh, 760px); overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.original-image-viewport:focus-visible { outline-offset: -2px; }
+.original-image-viewport img { max-width: none; margin-inline: auto; }
+@media (hover: hover) { .image-zoom-button:not(:disabled):hover { background: var(--reference); } }
+@media (max-width: 760px) { .original-pages > summary, .answer-details > summary { padding: 12px; } .image-zoom-button { width: 32px; height: 32px; } .image-zoom-reset { min-height: 32px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 @media print {
   .app { display: block; max-width: none; padding: 0; }
@@ -593,7 +622,7 @@ tbody th { font-weight: 500; }
     </aside>
   </div>
   <dialog class="question-dialog" id="question-dialog" aria-labelledby="question-title" aria-describedby="question-source">
-    <div class="dialog-panel"><header class="dialog-head"><div><p class="eyebrow" id="question-kicker"></p><h2 id="question-title"></h2><p id="question-source"></p></div><button type="button" class="close-button" id="close-dialog" aria-label="关闭题目弹窗" autofocus>×</button></header>
+    <div class="dialog-panel"><header class="dialog-head"><div><p class="eyebrow" id="question-kicker"></p><h2 id="question-title" tabindex="-1"></h2><p id="question-source"></p></div><div class="dialog-actions"><button type="button" class="close-button resize-button" id="resize-dialog" aria-label="全屏显示题目" title="全屏显示题目" aria-pressed="false" aria-controls="question-dialog"><svg class="maximize-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M11 3H17V9M17 3L11 9M3 11V17H9M3 17L9 11"/></svg><svg class="restore-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M11 3V9H17M17 3L11 9M3 11H9V17M3 17L9 11"/></svg></button><button type="button" class="close-button" id="close-dialog" aria-label="关闭题目弹窗"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 4L16 16M16 4L4 16"/></svg></button></div></header>
       <div class="dialog-body" id="dialog-body" tabindex="0"><div class="question-flags" id="question-flags"></div><h3 class="section-kicker">题目原文</h3><pre class="question-stem" id="question-stem"></pre><div id="question-assets"></div><div class="question-issues" id="question-issues" hidden></div><details class="answer-details" id="answer-details"><summary><span><span aria-hidden="true">＋</span> 展开参考答案</span><small>非官方 · 建议先独立作答</small></summary><div class="answer-content"><p class="answer-notice">以下为依据课件与题设推导的参考解答，不是原卷官方答案；题目条件不足时以所列假设为准。</p><div id="question-answer" class="answer-text"></div></div></details><div class="related-points"><h3 class="section-kicker">涉及知识点</h3><p id="question-points"></p></div></div>
       <footer class="dialog-footer"><button type="button" id="previous-question" class="plain-button">← 上一题</button><span id="question-position"></span><button type="button" id="next-question" class="plain-button">下一题 →</button></footer>
     </div>
@@ -617,6 +646,9 @@ const dialogBody = document.getElementById("dialog-body");
 const answerDetails = document.getElementById("answer-details");
 const answerSummary = answerDetails.querySelector("summary");
 const closeButton = document.getElementById("close-dialog");
+const resizeButton = document.getElementById("resize-dialog");
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let resizeAnimation = null;
 const previousButton = document.getElementById("previous-question");
 const nextButton = document.getElementById("next-question");
 const toc = document.getElementById("toc");
@@ -684,7 +716,120 @@ function makeText(tag, text, className = "") {
 }
 
 function updateAnswerLabel() {
-  answerSummary.firstElementChild.textContent = answerDetails.open ? "− 收起参考答案" : "＋ 展开参考答案";
+  const icon = makeText("span", answerDetails.open ? "−" : "＋", "disclosure-icon");
+  icon.setAttribute("aria-hidden", "true");
+  answerSummary.firstElementChild.replaceChildren(icon, makeText("span", answerDetails.open ? "收起参考答案" : "展开参考答案"));
+}
+
+function finishDialogResize() {
+  if (resizeAnimation) resizeAnimation.cancel();
+  resizeAnimation = null;
+  dialog.classList.remove("is-resizing");
+}
+
+function setDialogMaximized(maximized) {
+  dialog.classList.toggle("is-maximized", maximized);
+  resizeButton.setAttribute("aria-pressed", String(maximized));
+  const label = maximized ? "还原题目弹窗大小" : "全屏显示题目";
+  resizeButton.setAttribute("aria-label", label);
+  resizeButton.title = label;
+}
+
+function toggleDialogSize() {
+  if (!dialog.open) return;
+  const startBounds = dialog.getBoundingClientRect();
+  const scrollPosition = dialogBody.scrollTop;
+  finishDialogResize();
+  setDialogMaximized(!dialog.classList.contains("is-maximized"));
+  const endBounds = dialog.getBoundingClientRect();
+  if (!reducedMotion.matches && typeof dialog.animate === "function") {
+    dialog.classList.add("is-resizing");
+    const animation = dialog.animate([startBounds, endBounds].map(bounds => ({
+      left: `${bounds.left}px`,
+      top: `${bounds.top}px`,
+      width: `${bounds.width}px`,
+      height: `${bounds.height}px`
+    })), {duration: 320, easing: "cubic-bezier(0.4, 0, 0.2, 1)"});
+    resizeAnimation = animation;
+    animation.finished.then(() => {
+      if (resizeAnimation === animation) finishDialogResize();
+    }).catch(() => {});
+  }
+  dialogBody.scrollTop = scrollPosition;
+}
+
+function getOriginalImageWidth() {
+  const reference = makeText("div", "", "question-dialog original-size-reference");
+  reference.setAttribute("aria-hidden", "true");
+  const body = makeText("div", "", "dialog-body");
+  body.style.overflowY = "scroll";
+  const originals = makeText("div", "", "original-pages");
+  const figure = makeText("div", "", "question-figure");
+  const ruler = document.createElement("div");
+  figure.append(ruler);
+  originals.append(figure);
+  body.append(originals);
+  reference.append(body);
+  document.body.append(reference);
+  const width = ruler.getBoundingClientRect().width;
+  reference.remove();
+  return width;
+}
+
+function createOriginalFigures(assets, baseWidth, summary) {
+  const toolbar = makeText("div", "", "image-zoom-toolbar");
+  toolbar.setAttribute("role", "group");
+  toolbar.setAttribute("aria-label", "原始资料图片缩放");
+  const decrease = makeText("button", "", "image-zoom-button");
+  const increase = makeText("button", "", "image-zoom-button image-zoom-increase");
+  const reset = makeText("button", "重置", "plain-button image-zoom-reset");
+  const percentage = makeText("output", "75%", "image-zoom-percentage");
+  percentage.setAttribute("aria-live", "polite");
+  percentage.setAttribute("aria-atomic", "true");
+  decrease.setAttribute("aria-label", "缩小图片");
+  increase.setAttribute("aria-label", "放大图片");
+  reset.setAttribute("aria-label", "重置图片缩放为 75%");
+  for (const button of [decrease, increase, reset]) button.type = "button";
+  toolbar.append(makeText("span", "图片缩放", "image-zoom-label"), decrease, percentage, increase, reset);
+  summary.append(toolbar);
+  const images = [];
+  const viewports = [];
+  const figures = assets.map(asset => {
+    const figure = makeText("figure", "", "question-figure");
+    const viewport = makeText("div", "", "original-image-viewport");
+    viewport.tabIndex = 0;
+    viewport.setAttribute("role", "region");
+    viewport.setAttribute("aria-label", `PDF 第 ${asset.pdf_page} 页原始资料，可滚动查看图片`);
+    const image = document.createElement("img");
+    image.src = review.assets[asset.id].data_url;
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.alt = asset.description;
+    images.push(image);
+    viewports.push(viewport);
+    viewport.append(image);
+    figure.append(viewport, makeText("figcaption", `原始资料 · PDF 第 ${asset.pdf_page} 页 · ${asset.description}`));
+    return figure;
+  });
+  let scale = 75;
+  function setScale(value) {
+    scale = Math.max(25, Math.min(300, value));
+    for (const image of images) image.style.width = `${baseWidth * scale / 100}px`;
+    percentage.textContent = `${scale}%`;
+    decrease.disabled = scale === 25;
+    increase.disabled = scale === 300;
+  }
+  decrease.addEventListener("click", () => setScale(scale - 25));
+  increase.addEventListener("click", () => setScale(scale + 25));
+  reset.addEventListener("click", () => {
+    setScale(75);
+    for (const viewport of viewports) {
+      viewport.scrollTop = 0;
+      viewport.scrollLeft = 0;
+    }
+  });
+  setScale(75);
+  return figures;
 }
 
 function openQuestion(identifier, trigger) {
@@ -717,18 +862,18 @@ function openQuestion(identifier, trigger) {
   assets.replaceChildren();
   const originals = document.createElement("details");
   originals.className = "original-pages";
-  originals.append(makeText("summary", `查看原始资料页面 · ${question.assets.length} 页（含原图）`));
-  for (const asset of question.assets || []) {
-    const figure = document.createElement("figure");
-    figure.className = "question-figure";
-    const image = document.createElement("img");
-    image.src = review.assets[asset.id].data_url;
-    image.loading = "lazy";
-    image.decoding = "async";
-    image.alt = asset.description;
-    figure.append(image, makeText("figcaption", `原始资料 · PDF 第 ${asset.pdf_page} 页 · ${asset.description}`));
-    originals.append(figure);
-  }
+  const originalSummary = document.createElement("summary");
+  const originalTitle = makeText("span", "", "original-summary-title");
+  const originalIcon = makeText("span", "＋", "disclosure-icon");
+  originalIcon.setAttribute("aria-hidden", "true");
+  originals.addEventListener("toggle", () => {
+    originalIcon.textContent = originals.open ? "−" : "＋";
+  });
+  originalTitle.append(originalIcon, makeText("span", "查看原始资料"));
+  originalSummary.append(originalTitle);
+  originals.append(originalSummary);
+  const baseImageWidth = question.assets.length ? getOriginalImageWidth() : 0;
+  if (question.assets.length) originals.append(...createOriginalFigures(question.assets, baseImageWidth, originalSummary));
   if (question.assets.length) assets.append(originals);
   const sequence = review.questions.filter(item => item.paper_id === question.paper_id);
   const position = sequence.findIndex(item => item.id === identifier);
@@ -740,7 +885,7 @@ function openQuestion(identifier, trigger) {
     document.body.classList.add("modal-open");
   }
   dialogBody.scrollTop = 0;
-  closeButton.focus({preventScroll: true});
+  document.getElementById("question-title").focus({preventScroll: true});
 }
 
 function moveQuestion(direction) {
@@ -763,7 +908,12 @@ document.getElementById("chapters").addEventListener("click", event => {
   if (trigger) openQuestion(trigger.dataset.qid, trigger);
 });
 closeButton.addEventListener("click", () => dialog.close());
+resizeButton.addEventListener("click", toggleDialogSize);
+window.addEventListener("resize", finishDialogResize);
+reducedMotion.addEventListener("change", finishDialogResize);
 dialog.addEventListener("close", () => {
+  finishDialogResize();
+  setDialogMaximized(false);
   document.body.classList.remove("modal-open");
   if (returnFocus && returnFocus.isConnected && !returnFocus.closest("[hidden]")) returnFocus.focus({preventScroll: true});
   activeQuestionId = null;
